@@ -1,1 +1,1 @@
-# Codewars
+# Python Projects
