@@ -2,22 +2,23 @@ import pygame
 import time
 import random
 
-# 41,112
+# 42,110
 
 pygame.init()
-white = (255, 255, 255)
-yellow = (255, 255, 102)
-black = (0, 0, 0)
-red = (130, 0, 0)
-green = (0, 130, 0)
-blue = (0, 0, 130)
-grey = (200, 200, 200)
+color = {'white': (255, 255, 255),
+         'yellow': (255, 255, 102),
+         'black': (0, 0, 0),
+         'red': (130, 0, 0),
+         'green': (0, 130, 0),
+         'blue': (0, 0, 130),
+         'grey': (200, 200, 200),
+         }
 
 screen_width_x = 500
 screen_height_y = 580
 
 game_screen = pygame.display.set_mode((screen_width_x, screen_height_y))
-pygame.display.set_caption('Snake')  # game window name
+pygame.display.set_caption('Snake')
 clock = pygame.time.Clock()
 
 snake_block = 10
@@ -28,17 +29,17 @@ score_font = pygame.font.SysFont(None, 35)
 
 
 def score(score):
-    value = score_font.render('points: ' + str(score), True, black)
+    value = score_font.render('points: ' + str(score), True, color['black'])
     game_screen.blit(value, [30, 520])
 
 
 def our_snake(snake_block, snake_list):
     for x in snake_list:
-        pygame.draw.rect(game_screen, green, [
+        pygame.draw.rect(game_screen, color['green'], [
                          x[0], x[1], snake_block, snake_block])
 
 
-def message(msg, color=black):  # dirty
+def message(msg, color=color['black']):  # dirty, fix me
     text1 = 'Game Over'
     text2 = 'R --> ReStart'
     text3 = 'Q --> Quit'
@@ -57,6 +58,7 @@ def game_start():
     y1 = screen_height_y/2
     x1_change = 0
     y1_change = 0
+    vector_moving = ''
     snake_List = []
     Length_of_snake = 1
     foodx = round(random.randrange(10, 470)/10)*10
@@ -64,8 +66,8 @@ def game_start():
 
     while not game_over:
         while game_close == True:
-            game_screen.fill(black)
-            message('Looooser!', white)
+            game_screen.fill(color['black'])
+            message('not to day', color['white'])
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -81,20 +83,22 @@ def game_start():
             if event.type == pygame.QUIT:
                 game_over = True
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                if event.key == pygame.K_LEFT and vector_moving != 'Right':
                     x1_change = -snake_block
                     y1_change = 0
-                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    vector_moving = 'Left'
+                if event.key == pygame.K_RIGHT and vector_moving != 'Left':
                     x1_change = snake_block
                     y1_change = 0
-                elif event.key == pygame.K_UP or event.key == pygame.K_w:
+                    vector_moving = 'Right'
+                if event.key == pygame.K_UP and vector_moving != 'Down':
                     x1_change = 0
                     y1_change = -snake_block
-                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    vector_moving = 'Up'
+                if event.key == pygame.K_DOWN and vector_moving != 'Up':
                     x1_change = 0
                     y1_change = snake_block
-        # if x1 >= dis_width_x or x1 < 0 or y1 >= dis_height_y or y1 < 0:  # outside game_box death
-        #     game_close = True
+                    vector_moving = 'Down'
 
         ''' Snake teleport '''
         if x1 == 500.0:
@@ -105,16 +109,16 @@ def game_start():
             y1 = 10.0
         if y1 == 0.0:
             y1 = 490.0
-
+        '''snake like moving'''
         x1 += x1_change
         y1 += y1_change
         # print(f'x == {x1}, y == {y1}')  # points
-        game_screen.fill(grey)
-        pygame.draw.rect(game_screen, red, [
+        game_screen.fill(color['grey'])
+        pygame.draw.rect(game_screen, color['red'], [
                          foodx, foody, snake_block, snake_block])
-        pygame.draw.rect(game_screen, black, [
+        pygame.draw.rect(game_screen, color['black'], [
                          (0, 0), (500, 510)], 20)  # need line
-        pygame.draw.rect(game_screen, black, [(0, 0), (500, 580)], 20)
+        pygame.draw.rect(game_screen, color['black'], [(0, 0), (500, 580)], 20)
         pygame.display.update()
         snake_Head = []
         snake_Head.append(x1)
